@@ -135,6 +135,14 @@ const fixtures = {
     return meds
   },
 
+  getListInterRecord (n) {
+    let intrec = []
+    while (n-- > 0) {
+      intrec.push(this.getInterRecord())
+    }
+    return intrec
+  },
+
   getListRaces (n) {
     let races = []
     while (n-- > 0) {

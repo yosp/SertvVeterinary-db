@@ -110,7 +110,7 @@ test('save new Pet', async t => {
   let created = await db.savePet(pet)
   t.is(created.fullname, pet.fullname)
   t.is(created.sex, pet.sex)
-  t.is(created.age, 1.7)
+  t.is(created.age, 1.9)
   t.is(created.weight, pet.weight)
   t.is(created.alive, pet.alive)
   t.is(created.photo, pet.photo)
@@ -299,6 +299,18 @@ test('update medicine', async t => {
   t.is(updated.description, medicine.description)
 })
 
+test('update interecord', async t => {
+  let db = t.context.db
+  let intRecord = fixtures.getInterRecord()
+  let result = await db.saveInterecord(intRecord)
+  t.is(typeof db.updateInterecord, 'function', 'updateInterecord is a function')
+
+  result.description = 'Vacuna para tratar la fiebre A1'
+  let updated = await db.updateInterecord(result)
+  t.is(result.id, updated.id)
+  t.is(result.description, updated.description)
+})
+
 test('get internment', async t => {
   let db = t.context.db
   t.is(typeof db.getInternment, 'function', 'getInternment is a function')
@@ -464,4 +476,20 @@ test('get appointment by pet', async t => {
   let result = await db.getAppointmentByPet(pet)
   t.is(result.length, createds.length)
   t.is(createds2.length, 3)
+})
+
+test('get interecord by internment', async t => {
+  let db = t.context.db
+  let interecord = fixtures.getListInterRecord()
+  let internid = uuid.v4()
+  interecord.map(a => {
+    a.internid = internid
+  })
+
+  let saved = interecord.map(a => db.saveInterecord(a))
+  t.is(typeof db.getInterecord, 'function', 'getInterecord is a function')
+  let created = await Promise.all(saved)
+  let result = await db.getInterecord(internid)
+
+  t.is(result.length, created.length)
 })
