@@ -357,8 +357,8 @@ test('get client data by phone', async t => {
   t.is(typeof db.getClientByPhone, 'function', 'getClientByPhone is a function')
   let client = fixtures.getClient()
   let created = await db.saveClient(client)
-  let result = await db.getClientByPhone(created.phone2)
-  t.deepEqual(created.length, result.length)
+  let result = await db.getClientByPhone(created.phone)
+  t.deepEqual(created.phone, result[0].phone)
   t.throws(db.getClient('foo'), /not found/)
 })
 
