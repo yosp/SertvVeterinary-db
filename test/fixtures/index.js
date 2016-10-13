@@ -20,6 +20,15 @@ const fixtures = {
     }
   },
 
+  getProduct () {
+    return {
+      description: 'Bonabid',
+      stock: 8,
+      cost: 100,
+      price: 180
+    }
+  },
+
   getInterRecord () {
     return {
       description: 'Vacuna para tratar la fiebre',
@@ -160,6 +169,7 @@ const fixtures = {
 
     return ethnis
   }
+
 }
 
 module.exports = fixtures

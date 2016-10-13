@@ -183,6 +183,16 @@ test('save apRecord', async t => {
   t.truthy(result.id)
 })
 
+test('save products', async t => {
+  let db = t.context.db
+  let product = fixtures.getProduct()
+
+  t.is(typeof db.saveProduct, 'function', 'saveProduct is a function')
+  let result = await db.saveProduct(product)
+  t.truthy(result.id)
+  t.truthy(result.createdAt)
+})
+
 test('update client', async t => {
   let db = t.context.db
   t.is(typeof db.updateClient, 'function', 'updateClient is a function')
@@ -229,7 +239,17 @@ test('update appointment', async t => {
   t.truthy(result.createdAt)
 })
 
-test('save apRecord', async t => {
+test('update products', async t => {
+  let db = t.context.db
+  let product = fixtures.getProduct()
+  let result = await db.saveProduct(product)
+  t.is(typeof db.updateProducts, 'function', 'updateProducts is a function')
+  result.description = 'bonabit'
+  let updated = await db.updateProducts(result)
+  t.is(updated.description, result.description)
+})
+
+test('update apRecord', async t => {
   let db = t.context.db
   let record = {
     description: 'todo bien, se aplico la vacuna desparacitadora',
@@ -476,6 +496,20 @@ test('get appointment by pet', async t => {
   let result = await db.getAppointmentByPet(pet)
   t.is(result.length, createds.length)
   t.is(createds2.length, 3)
+})
+
+test('get products by name', async t => {
+  let db = t.context.db
+  let product = fixtures.getProduct()
+  let result = await db.saveProduct(product)
+  t.is(typeof db.getProducts, 'function', 'getProducts is a function')
+
+  let prget = await db.getProducts(result.description)
+  t.is(prget[0].description, result.description)
+  t.is(prget[0].stock, result.stock)
+  t.is(prget[0].price, result.price)
+  t.is(prget[0].cost, result.cost)
+  t.truthy(prget[0].id)
 })
 
 test('get interecord by internment', async t => {
