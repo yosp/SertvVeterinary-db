@@ -90,6 +90,22 @@ const fixtures = {
     }
   },
 
+  getBill () {
+    return {
+      client: uuid.v4(),
+      note: 'Factura de cliente exporadico'
+    }
+  },
+
+  getBillDetail () {
+    return {
+      productId: uuid.v4(),
+      amount: 4,
+      unitPrice: 20,
+      subPrice: 80
+    }
+  },
+
   getListPetsImages (n) {
     let images = []
     while (n-- > 0) {
@@ -168,6 +184,24 @@ const fixtures = {
     }
 
     return ethnis
+  },
+
+  getListBills (n) {
+    let bills = []
+    while (n-- > 0) {
+      bills.push(this.getBill())
+    }
+
+    return bills
+  },
+
+  getListBillDetail (n) {
+    let detail = []
+    while (n-- > 0) {
+      detail.push(this.getBillDetail())
+    }
+
+    return detail
   }
 
 }

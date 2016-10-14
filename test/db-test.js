@@ -193,6 +193,26 @@ test('save products', async t => {
   t.truthy(result.createdAt)
 })
 
+test('save bill', async t => {
+  let db = t.context.db
+  let bill = fixtures.getBill()
+
+  t.is(typeof db.saveBills, 'function', 'saveBills is function')
+  let result = await db.saveBills(bill)
+  t.truthy(result.id)
+  t.truthy(result.createdAt)
+})
+
+test('save billDetail', async t => {
+  let db = t.context.db
+  let detail = fixtures.getBillDetail()
+  detail.billid = uuid.v4()
+  t.is(typeof db.saveBillDetail, 'function', 'saveBillDetail is a function')
+  let result = await db.saveBillDetail(detail)
+  t.truthy(result.id)
+  t.truthy(result.createdAt)
+})
+
 test('update client', async t => {
   let db = t.context.db
   t.is(typeof db.updateClient, 'function', 'updateClient is a function')
@@ -331,6 +351,32 @@ test('update interecord', async t => {
   t.is(result.description, updated.description)
 })
 
+test('update bills', async t => {
+  let db = t.context.db
+  let bill = fixtures.getBill()
+  let result = await db.saveBills(bill)
+
+  t.is(typeof db.updateBill, 'function', 'updateBill is a function')
+
+  result.note = 'note is no requiere'
+  let updated = await db.updateBill(result)
+  t.is(result.id, updated.id)
+  t.is(result.note, updated.note)
+})
+
+test('update billDetail', async t => {
+  let db = t.context.db
+  let detail = fixtures.getBillDetail()
+  detail.billid = uuid.v4()
+  await db.saveBillDetail(detail)
+  t.is(typeof db.updateBillDatail, 'function', 'updateBillDatail is a function')
+  detail.amount = 5
+  detail.subPrice = 100
+  let updated = await db.updateBillDatail(detail)
+  t.is(detail.amount, updated.amount)
+  t.is(detail.subPrice, updated.subPrice)
+})
+
 test('get internment', async t => {
   let db = t.context.db
   t.is(typeof db.getInternment, 'function', 'getInternment is a function')
@@ -349,6 +395,22 @@ test('get client list', async t => {
   t.is(typeof db.getClientList, 'function', 'getClientList is a function')
   let created = await Promise.all(saveClient)
   let result = await db.getClientList()
+  t.is(created.length, result.length)
+})
+
+test('get billDetail', async t => {
+  let db = t.context.db
+  let billid = uuid.v4()
+  let detail = fixtures.getListBillDetail()
+
+  detail.map(det => {
+    det.billid = billid
+  })
+
+  detail.map(det => db.saveBillDetail(det))
+  let created = await Promise.all(detail)
+  t.is(typeof db.getBillDetail, 'function', 'getBillDetail is a function')
+  let result = await db.getBillDetail(billid)
   t.is(created.length, result.length)
 })
 
@@ -474,6 +536,30 @@ test('get appointment', async t => {
   let createds = await Promise.all(savedApp)
   let result = await db.getAppointments()
   t.is(result.length, createds.length)
+})
+
+test('get bill', async t => {
+  let db = t.context.db
+  let bill = fixtures.getBill()
+
+  let saved = await db.saveBills(bill)
+  t.is(typeof db.getBill, 'function', 'getBill is a function')
+  let getedBill = await db.getBill(saved.id)
+  t.is(saved.id, getedBill.id)
+  t.is(saved.note, getedBill.note)
+})
+
+test('get bill by dates', async t => {
+  let db = t.context.db
+  let bill = fixtures.getListBills(5)
+
+  let dateA = new Date('10/01/2016')
+  let dateB = new Date('10/30/2016')
+  let saved = bill.map(b => db.saveBills(b))
+  let createds = await Promise.all(saved)
+  t.is(typeof db.getBillByDate, 'function', 'getBillByDate is a function')
+  let getedBill = await db.getBillByDate(dateA, dateB)
+  t.is(getedBill.length, createds.length)
 })
 
 test('get appointment by pet', async t => {
