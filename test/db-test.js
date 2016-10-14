@@ -213,6 +213,17 @@ test('save billDetail', async t => {
   t.truthy(result.createdAt)
 })
 
+test('save user', async t => {
+  let db = t.context.db
+  let user = fixtures.getUser()
+
+  t.is(typeof db.saveNewUser, 'function', 'saveNewUser is a function')
+  let result = await db.saveNewUser(user)
+  t.truthy(user.id, result.id)
+  t.truthy(user.createdAt, result.createdAt)
+  t.truthy(utils.encrypt(user.password), result.password)
+})
+
 test('update client', async t => {
   let db = t.context.db
   t.is(typeof db.updateClient, 'function', 'updateClient is a function')
@@ -228,6 +239,25 @@ test('update client', async t => {
   t.is(updated.email, client.email)
   t.is(updated.phone, client.phone)
   t.is(updated.phone2, client.phone2)
+})
+
+test('update user', async t => {
+  let db = t.context.db
+  let user = fixtures.getUser()
+  let result = await db.saveNewUser(user)
+  t.is(typeof db.updateUser, 'function', 'updateUser is a function')
+  result.fullname = 'Yeison Segura Plasecio'
+  let updated = await db.updateUser(result)
+  t.truthy(result.fullname, updated.fullname)
+})
+
+test('user auth', async t => {
+  let db = t.context.db
+  let user = fixtures.getUser()
+  await db.saveNewUser(user)
+  t.is(typeof db.authenticate, 'function', 'authenticate is a function')
+  let auth = await db.authenticate(user.username, 'Tinton1234')
+  t.truthy(auth, true)
 })
 
 test('update internment', async t => {

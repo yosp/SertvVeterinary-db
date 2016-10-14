@@ -29,6 +29,14 @@ const fixtures = {
     }
   },
 
+  getUser () {
+    return {
+      username: 'ysegura',
+      fullname: 'Yeison Segura',
+      password: 'Tinton1234'
+    }
+  },
+
   getInterRecord () {
     return {
       description: 'Vacuna para tratar la fiebre',
