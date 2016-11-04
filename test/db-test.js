@@ -110,7 +110,7 @@ test('save new Pet', async t => {
   let created = await db.savePet(pet)
   t.is(created.fullname, pet.fullname)
   t.is(created.sex, pet.sex)
-  t.is(created.age, 1.9)
+  t.is(created.age, 1.1)
   t.is(created.weight, pet.weight)
   t.is(created.alive, pet.alive)
   t.is(created.photo, pet.photo)
@@ -206,7 +206,10 @@ test('save bill', async t => {
 test('save billDetail', async t => {
   let db = t.context.db
   let detail = fixtures.getBillDetail()
+  let product = fixtures.getProduct()
   detail.billid = uuid.v4()
+  let pr = await db.saveProduct(product)
+  detail.productId = pr.id
   t.is(typeof db.saveBillDetail, 'function', 'saveBillDetail is a function')
   let result = await db.saveBillDetail(detail)
   t.truthy(result.id)
@@ -397,12 +400,16 @@ test('update bills', async t => {
 test('update billDetail', async t => {
   let db = t.context.db
   let detail = fixtures.getBillDetail()
+  let product = fixtures.getProduct()
+  let prvAmount = detail.amount
   detail.billid = uuid.v4()
+  let pr = await db.saveProduct(product)
+  detail.productId = pr.id
   await db.saveBillDetail(detail)
   t.is(typeof db.updateBillDatail, 'function', 'updateBillDatail is a function')
   detail.amount = 5
+  let updated = await db.updateBillDatail(detail, prvAmount)
   detail.subPrice = 100
-  let updated = await db.updateBillDatail(detail)
   t.is(detail.amount, updated.amount)
   t.is(detail.subPrice, updated.subPrice)
 })
@@ -584,7 +591,7 @@ test('get bill by dates', async t => {
   let bill = fixtures.getListBills(5)
 
   let dateA = new Date('10/01/2016')
-  let dateB = new Date('10/30/2016')
+  let dateB = new Date('11/30/2016')
   let saved = bill.map(b => db.saveBills(b))
   let createds = await Promise.all(saved)
   t.is(typeof db.getBillByDate, 'function', 'getBillByDate is a function')
