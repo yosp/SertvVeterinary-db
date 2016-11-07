@@ -520,7 +520,7 @@ test('get Ethnicities', async t => {
   t.is(createds.length, result.length)
 })
 
-test('get laboratory', async t => {
+test('get laboratory list', async t => {
   let db = t.context.db
   let laboratory = fixtures.getListLaboratory(5)
   let savedLabs = laboratory.map(et => db.saveLaboratory(et))
@@ -528,6 +528,15 @@ test('get laboratory', async t => {
   let createds = await Promise.all(savedLabs)
   let result = await db.getLaboratorys()
   t.is(createds.length, result.length)
+})
+
+test('get laboratory', async t => {
+  let db = t.context.db
+  let laboratory = fixtures.getLaboratory()
+  t.is(typeof db.getLaboratoryById, 'function', 'getLaboratoryById is a function')
+  let createds = await db.saveLaboratory(laboratory)
+  let result = await db.getLaboratoryById(createds.id)
+  t.deepEqual(createds, result)
 })
 
 test('get apRecord', async t => {
