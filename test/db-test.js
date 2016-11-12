@@ -567,9 +567,13 @@ test('get Medicines', async t => {
 test('get petsImages', async t => {
   let db = t.context.db
   let images = fixtures.getListPetsImages(5)
+  let id = uuid.v4()
+  images.map(x => {
+    x.petid = id
+  })
   let saveImages = images.map(img => db.savePetImage(img))
   let created = await Promise.all(saveImages)
-  let result = await db.getPetImages()
+  let result = await db.getPetImages(images[0].petid)
 
   t.is(created.length, result.length)
 })
